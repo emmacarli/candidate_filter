@@ -1,10 +1,16 @@
-import argparse
+import optparse
 import json
 import os
 import reading_cands
 import cluster_cands
 import spatial_rfi
 import filtering
+import xml_filter_and_fold
+
+
+
+
+
 
 
 def parse_arguments():
@@ -18,6 +24,10 @@ def parse_arguments():
     default_config_path = f"{os.path.dirname(__file__)}/default_config.json"
     parser.add_argument('-c', '--config', type=str, default=default_config_path,
                         metavar=('config_file'), help="Path to config file.")
+    parser.add_option('-H',type=int,help='harmonic number to search upto',dest="h_no",default=16)
+    parser.add_option('--p_tol',type=float,help='period tolerance',dest="p_tol",default=5e-4)
+    parser.add_option('--dm_tol',type=float,help='dm tolerance',dest="dm_tol",default=5e-3)
+
     args = parser.parse_args()
     return args
 
@@ -39,6 +49,15 @@ def main(args):
 
     # Find spatial RFI and write out details about clusters
     df_clusters = spatial_rfi.label_spatial_rfi(df_cands_clustered, config)
+
+
+    # Label known RFI sources
+    df_known_rfi = label_known_rfi
+
+
+    # Label known pulsar sources from input par files
+    
+
 
     # Label bad clusters
     df_cands_filtered, df_clusters_filtered = filtering.filter_clusters(df_cands_clustered,
