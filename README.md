@@ -5,7 +5,7 @@ Requires >= python 3.6.
 
 
 
-``      usage: candidate_filter.py [-h] [-i input_files [input_files ...]]
+```      usage: candidate_filter.py [-h] [-i input_files [input_files ...]]
                            [-o output_path] [-c config_file] [-p]
                            [-H HARMONICS] [--p_tol P_TOL] [--dm_tol DM_TOL]
                            [--par PAR_PATH] [--rfi BIRDIES]
