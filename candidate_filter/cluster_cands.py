@@ -60,6 +60,7 @@ def relate_candidates(cand_1, cand_2, obs_meta_data, config):
 def cluster_cand_df(df_cands, obs_meta_data, config):
     # Cluster candidates without harmonics
 
+    df_cands = df_cands.reset_index(drop=True)
     # max_distance_broadened_period defines how close related candidates should be after
     # broadening in rotations
     max_distance_broadened_period = config['max_distance_broadened_period']
@@ -72,9 +73,12 @@ def cluster_cand_df(df_cands, obs_meta_data, config):
     # Create DataFrame where period is sorted in order to easier cycle through
     # candidates with similar period
     df_cands_period_sorted = df_cands.sort_values('period', ascending=True)
+    #print (df_cands_period_sorted.shape[0])
 
     cluster_id = 0
+    #df_cands['cluster_id'] = 0
     df_cands['cluster_id'] = np.nan
+    #df_cands_period_sorted['cluster_id'] = 0
     df_cands_period_sorted['cluster_id'] = np.nan
     df_cands['strongest_in_cluster'] = 0
 
@@ -136,6 +140,9 @@ def cluster_cand_df(df_cands, obs_meta_data, config):
                         if rot_distance_simple > max_distance_period:
                             break
             cluster_id += 1
-
-    df_cands = df_cands.astype({"cluster_id": int})
-    return df_cands
+  
+    #print (df_cands[df_cands.isna().any(axis=1)])
+    print (df_cands)
+    df_cands_new = df_cands.dropna()
+    df_cands_new = df_cands_new.astype({"cluster_id": int})
+    return df_cands_new
