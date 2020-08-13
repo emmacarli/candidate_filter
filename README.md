@@ -16,15 +16,15 @@ Command line arguments for the candidate filtering.
 
 
 optional arguments:
-  -h, --help            show this help message and exit
+  ```-h, --help            show this help message and exit```
   
   
-  -i input_files [input_files ...], --input input_files [input_files ...]
-                        Path to the input files.
+  ```-i input_files [input_files ...], --input input_files [input_files ...]
+                        Path to the input files.```
                         
                         
-  -o output_path, --output output_path
-                        Base name of the output csv files
+  ```-o output_path, --output output_path
+                        Base name of the output csv files```
                         
                         
   -c config_file, --config config_file
