@@ -29,12 +29,14 @@ def read_candidate_files(files, verbose=True):
         if file_index == 0:
             tsamp = float(root[1].find("tsamp").text)
             nsamples = float(root[1].find("nsamples").text)
+            fft_size = float(root.find('search_parameters/size').text)
             obs_length = tsamp * nsamples
             speed_of_light = 299792458.0
             obs_length_over_c = obs_length / speed_of_light
             obs_meta_data = {"tsamp": tsamp,
                              "nsamples": nsamples,
                              "obs_length": obs_length,
+                             "fft_size": fft_size,           
                              'obs_length_over_c': obs_length_over_c}
         file_index += 1
 

@@ -1,4 +1,4 @@
-def filter_clusters(df_cands, df_clusters, config):
+def filter_clusters(df_cands, df_clusters, config, args):
     # Filter out bad candidates
     # Creating a class to do the filtering might make things simpler..
     min_decay_value = config['min_spatial_decay']
@@ -36,6 +36,9 @@ def filter_clusters(df_cands, df_clusters, config):
 
     good_files = df_cands[(df_cands['spatial_rfi'] == 0) &
                           (df_cands['low_nassoc'] == 0)]
+
+    good_files.to_csv(f"{args.output}_good_cands.csv")    
+    good_files[good_files['strongest_in_cluster']==1].to_csv(f"{args.output}_good_cands_to_fold.csv")    
 
     # Good files == neither RFI nor low nassoc
     print(f"Good Files: {len(good_files)}")

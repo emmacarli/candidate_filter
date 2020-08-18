@@ -123,13 +123,13 @@ def get_known_psr(args,known_psrs,known_freqs,known_dms,cand_freqs,cand_dms,cand
     with open('possible_known_psrs.txt','a') as f:
         #f.truncate(0)
         #f.write(xml_path+'\n')
-        f.write("PULSAR CAND_NO SNR F0 CAND_F0 DM CAND_DM\n")
+        #f.write("PULSAR CAND_NO SNR F0 CAND_F0 DM CAND_DM\n")
         for ind in sorted(cand_freq_indices):
            idx = known_freq_indices[np.where(cand_freq_indices==ind)[0][0]]
            if np.isclose(cand_dms[ind],known_dms[idx],rtol=args.dm_tol):
                f.write(known_psrs['names'][idx]+' '+str(ind)+' '+str(cand_snrs[ind])+' '+str(known_freqs[idx])+' '+str(cand_freqs[ind])+' '+str(known_dms[idx])+' '+str(cand_dms[ind])+'\n')
                log.info("Potential redetection....")
-               log.info("PULSAR CAND_NO SNR F0 CAND_F0 DM CAND_DM\n")
+               log.info("PULSAR CAND_NO SNR F0 CAND_F0 DM CAND_DM")
                log.info(known_psrs['names'][idx]+' '+str(ind)+' '+str(cand_snrs[ind])+' '+str(known_freqs[idx])+' '+str(cand_freqs[ind])+' '+str(known_dms[idx])+' '+str(cand_dms[ind])+'\n')
                psr_indices.append(ind)     
         f.close()
@@ -139,7 +139,7 @@ def get_known_psr(args,known_psrs,known_freqs,known_dms,cand_freqs,cand_dms,cand
     ratios = np.outer(h,1.0/h)
     all_ratios = np.unique(np.sort(ratios.ravel()))
 
-    #known_freqs = [86.48163691]
+    known_freqs = [86.48163691]
     for i,freq in enumerate(known_freqs):
         r = all_ratios*freq            
         p = abs(1-cand_freqs/r[np.searchsorted(r,cand_freqs)-1])
@@ -152,13 +152,13 @@ def get_known_psr(args,known_psrs,known_freqs,known_dms,cand_freqs,cand_dms,cand
             q = abs(1-cand_freqs/r[np.searchsorted(r,cand_freqs)])
         l = np.vstack((p, q)).min(axis=0)
         if '86.48' in str(freq):    
-            ph_indices = np.where(l<5e-3)[0] # relax the tolerance for Ter5A by order of mag.
+            ph_indices = np.where(l<5e-4)[0] # relax the tolerance for Ter5A by order of mag.
         else:
             ph_indices = np.where(l<args.p_tol)[0]
 
         for ph in sorted(ph_indices):
             if '86.48' in str(freq):
-                if np.isclose(cand_dms[ph],known_dms[i],rtol=1e-3): # relax dm tolerance for Ter5A
+                if np.isclose(cand_dms[ph],known_dms[i],rtol=5e-3): # relax dm tolerance for Ter5A
                     reduced_ph_indices.append(ph)
             else:
                 if np.isclose(cand_dms[ph],known_dms[i],rtol=args.dm_tol):
