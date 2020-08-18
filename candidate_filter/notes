@@ -1,3 +1,0 @@
-1. Write out known rfi, known psr and good candidates to fold csvs
-2. Fold based on these csv inputs and appropriate paths
-
