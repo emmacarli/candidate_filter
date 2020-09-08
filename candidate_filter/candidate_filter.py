@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.6
 import optparse
 import argparse
 import json
