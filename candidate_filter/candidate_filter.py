@@ -40,7 +40,7 @@ def a_to_pdot(P_s, acc_ms2):
 
 def period_modified(p0,pdot,no_of_samples,tsamp,fft_size):
     if (fft_size==0.0):
-        return p0 - pdot*float(1<<(no_of_samples.bit_length()-1))*tsamp/2
+        return p0 - pdot*float(1<<(int(no_of_samples).bit_length()-1))*tsamp/2
     else:
         return p0 - pdot*float(fft_size)*tsamp/2
 
