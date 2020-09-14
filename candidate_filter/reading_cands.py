@@ -16,6 +16,7 @@ def read_candidate_files(files, verbose=True):
     all_rows = []
     file_index = 0
     for file in files:
+        file = file.replace(',','') 
         tree = ET.parse(file)
         root = tree.getroot()
 

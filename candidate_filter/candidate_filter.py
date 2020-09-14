@@ -31,6 +31,7 @@ def parse_arguments():
     parser.add_argument('--dm_tol',type=float,help='dm tolerance',dest="dm_tol",default=5e-3)
     parser.add_argument('--par',type=str,help='Path to par files of known pulsars',dest="par_path",default='/beegfs/u/prajwalvp/presto_ephemerides/Ter5/par_files_scott')
     parser.add_argument('--rfi',type=str,help='known birdie list name',dest="birdies",default='known_rfi.txt')
+    parser.add_argument('--searchpsr',type=str,help='Flag for filtering known pulsars(Default is no known pulsar filtering(0))',dest="psr_filter",default=0)
     args = parser.parse_args()
     return args
 
@@ -54,9 +55,12 @@ def main(args):
         config = json.load(json_data_file)
 
     # Read files into a single pandas DataFrame
-    df_cands_ini, obs_meta_data = reading_cands.read_candidate_files(
-        args.input)
+    xml_list = ','.join(args.input).split(',')
+    df_cands_ini, obs_meta_data = reading_cands.read_candidate_files(xml_list)
 
+   # df_cands_ini, obs_meta_data = reading_cands.read_candidate_files(args.input
+
+   
 
 
     # Get candidate periods and dms
@@ -85,24 +89,27 @@ def main(args):
      
 
 
-
-
     # Label known RFI sources
     known_rfi_indices = known_filter.get_known_rfi(cand_freqs,args)
     print("Number of RFI instances: %d"%len(known_rfi_indices))
     time.sleep(5)
 
-    # Get known pulsar periods and dms
-    known_psrs = known_filter.get_params_from_pars(args.par_path)
-    known_freqs = np.array(known_psrs['F0'],dtype=float)
-    known_dms = np.array(known_psrs['DM'],dtype=float)
-
-    # Label known pulsar sources from input par files
-    known_psr_indices,known_ph_indices = known_filter.get_known_psr(args,known_psrs,known_freqs,known_dms,cand_freqs,cand_dms,cand_snrs) 
 
 
     # Retain candidates which are not known rfi or pulsars
-    all_known_indices =  list(set(list(known_rfi_indices) + known_psr_indices + known_ph_indices))
+    if args.psr_filter:
+        # Get known pulsar periods and dms
+        known_psrs = known_filter.get_params_from_pars(args.par_path)
+        known_freqs = np.array(known_psrs['F0'],dtype=float)
+        known_dms = np.array(known_psrs['DM'],dtype=float)
+
+        # Label known pulsar sources from input par files
+        known_psr_indices,known_ph_indices = known_filter.get_known_psr(args,known_psrs,known_freqs,known_dms,cand_freqs,cand_dms,cand_snrs) 
+        all_known_indices =  list(set(list(known_rfi_indices) + known_psr_indices + known_ph_indices))
+
+    else:
+        all_known_indices =  list(set(list(known_rfi_indices)))
+
     print("Number of dropped candidates: %d"%len(all_known_indices))
     df_cands_remain = df_cands_ini.drop(df_cands_ini.index[all_known_indices]) 
 
@@ -129,11 +136,14 @@ def main(args):
     # Write out known rfi file
     df_cands_ini.iloc[known_rfi_indices,:].to_csv(f"{args.output}_known_rfi_cands.csv")
 
-    # Write out known pulsar file
-    df_cands_ini.iloc[known_psr_indices,:].to_csv(f"{args.output}_known_psr_cands.csv")
 
-    # Write out known pulsar harmonics file
-    df_cands_ini.iloc[known_ph_indices,:].to_csv(f"{args.output}_known_ph_cands.csv")
+
+    if args.psr_filter:
+        # Write out known pulsar file
+        df_cands_ini.iloc[known_psr_indices,:].to_csv(f"{args.output}_known_psr_cands.csv")
+
+        # Write out known pulsar harmonics file
+        df_cands_ini.iloc[known_ph_indices,:].to_csv(f"{args.output}_known_ph_cands.csv")
 
     
    
@@ -143,16 +153,16 @@ def main(args):
     df_clusters_filtered.to_csv(f"{args.output}_clusters.csv")
 
     # Write out candidate lists for single beams
-    output_folder = f"{os.path.dirname(args.output)}/single_beams/"
-    try:
-        os.mkdir(output_folder)
-    except FileExistsError:
-        pass
-    unique_file_idxs = df_cands_filtered['file_index']
-    for file_index in unique_file_idxs:
-        df_file = df_cands_filtered[df_cands_filtered['file_index'] == file_index]
-        file_name = os.path.basename(os.path.dirname(df_file['file'].iloc[0]))
-        df_file.to_csv(f"{output_folder}{file_name}.csv")
+    #output_folder = f"{os.path.dirname(args.output)}/single_beams/"
+    #try:
+    #    os.mkdir(output_folder)
+    #except FileExistsError:
+    #    pass
+    #unique_file_idxs = df_cands_filtered['file_index']
+    #for file_index in unique_file_idxs:
+    #    df_file = df_cands_filtered[df_cands_filtered['file_index'] == file_index]
+    #    file_name = os.path.basename(os.path.dirname(df_file['file'].iloc[0]))
+    #    df_file.to_csv(f"{output_folder}{file_name}.csv")
 
 
 if __name__ == "__main__":

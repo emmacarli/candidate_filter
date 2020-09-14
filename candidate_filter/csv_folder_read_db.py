@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import glob
 import xml.etree.ElementTree as ET
@@ -27,6 +29,7 @@ log.setLevel('INFO')
 parser = optparse.OptionParser()
 parser.add_option('-C',type=str,help='Path to CSV file post candidate filtering to fold',dest="csv_path")
 parser.add_option('-B',type=int,help='Batches',dest="batch_no",default=22)
+parser.add_option('','--db', dest="database", type=str, help='SQLAlchemy database descriptor')
 parser.add_option('-M',type=str,help='Mask Path',dest="mask_path",default="/beegfs/PROCESSING/TRAPUM/RFIFIND_masks/Ter5_16apr20_frankenmask/frankenbeam_mask_rfifind.mask")
 
 opts,args = parser.parse_args()
@@ -108,7 +111,7 @@ def get_params_from_csv_and_fold(opts):
 
 
            # Get input files from processing id
-           engine = create_engine('mysql+pymysql://root:trapumdb@10.98.76.190:30002/trapum_web', echo=False) # Change you your own path here
+           engine = create_engine(opts.database, echo=False) # Change you your own path here
            Session = sessionmaker(bind=engine)
            session = Session()
 
@@ -123,7 +126,7 @@ def get_params_from_csv_and_fold(opts):
                      
                
            try:
-               process = subprocess.Popen("prepfold -ncpus 1 -nsub 64 -mask %s -noxwin -topo -p %s -pd %s -dm %s %s -o %s"%(opts.mask_path,str(folding_packet['period']),str(folding_packet['pdot']),str(folding_packet['dm']),input_filenames,output_name),shell=True,cwd=output_path)
+               process = subprocess.Popen("prepfold -ncpus 1 -mask %s -noxwin -topo -p %s -pd %s -dm %s %s -o %s"%(opts.mask_path,str(folding_packet['period']),str(folding_packet['pdot']),str(folding_packet['dm']),input_filenames,output_name),shell=True,cwd=output_path)
                #script = "prepfold -ncpus 1 -nsub 64 -mask %s -noxwin -topo -p %s -pd %s -dm %s %s -o %s"%(opts.mask_path,str(folding_packet['period']),str(folding_packet['pdot']),str(folding_packet['dm']),input_name,output_name)
                #log.info(script)
                #log.info(output_path)
