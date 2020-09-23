@@ -88,9 +88,20 @@ def create_row(root, candidates, file, file_index):
 def convert_to_deg(ra, dec):
     # Convert hour angle strings to degrees
 
-    ra_string = str(ra)
-    ra_string = ra_string[:2] + ' ' + ra_string[2:4] + ' ' + ra_string[4:]
-    dec_string = str(dec)
-    dec_string = dec_string[:3] + ' ' + dec_string[3:5] + ' ' + dec_string[5:]
-    coord = SkyCoord(ra_string + ' ' + dec_string, unit=(u.hourangle, u.deg))
+
+    ra_deg = int(ra/10000)
+    ra_min = int(ra/100) - 100*ra_deg
+    ra_sec = ra - 10000*ra_deg - 100*ra_min
+       
+    dec_deg = int(dec/10000)
+    dec_min = int(dec/100) - 100*dec_deg
+    dec_sec = dec - 10000*dec_deg - 100*dec_min
+
+    ra_coord = "{}:{}:{:.2f}".format(ra_deg, abs(ra_min), abs(ra_sec))
+    #print(ra_coord)
+    dec_coord = "{}:{}:{:.2f}".format(dec_deg, abs(dec_min), abs(dec_sec))
+    #print(dec_coord)
+   
+    #coord = SkyCoord(ra_string + ' ' + dec_string, unit=(u.hourangle, u.deg))
+    coord = SkyCoord('%s %s'%(ra_coord,dec_coord), unit=(u.hourangle, u.deg))
     return coord.ra.deg, coord.dec.deg

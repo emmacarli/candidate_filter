@@ -86,11 +86,12 @@ def main(args):
 
     cand_periods = np.asarray(mod_periods,dtype=float)
     cand_freqs = 1/cand_periods
+    cand_mid_freqs = 1/cand_mid_periods
      
 
 
     # Label known RFI sources
-    known_rfi_indices = known_filter.get_known_rfi(cand_freqs,args)
+    known_rfi_indices = known_filter.get_known_rfi(cand_mid_freqs,args)
     print("Number of RFI instances: %d"%len(known_rfi_indices))
     time.sleep(5)
 
