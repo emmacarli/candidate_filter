@@ -58,9 +58,11 @@ def main(args):
     xml_list = ','.join(args.input).split(',')
     df_cands_ini, obs_meta_data = reading_cands.read_candidate_files(xml_list)
 
-   # df_cands_ini, obs_meta_data = reading_cands.read_candidate_files(args.input
 
    
+    # Remove DM candidates below 2 pc cm^-3 - 0 DM + too low a DM to probably be real
+    print("Removing candidates below DM of 2 pc cm^-3") 
+    df_cands_ini = df_cands_ini[df_cands_ini['dm'] < 2.0]
 
 
     # Get candidate periods and dms
@@ -88,6 +90,10 @@ def main(args):
     cand_freqs = 1/cand_periods
     cand_mid_freqs = 1/cand_mid_periods
      
+
+    
+
+
 
 
     # Label known RFI sources
@@ -152,19 +158,6 @@ def main(args):
     df_cands_filtered.to_csv(f"{args.output}_cands.csv")
     # Write out cluster list
     df_clusters_filtered.to_csv(f"{args.output}_clusters.csv")
-
-    # Write out candidate lists for single beams
-    #output_folder = f"{os.path.dirname(args.output)}/single_beams/"
-    #try:
-    #    os.mkdir(output_folder)
-    #except FileExistsError:
-    #    pass
-    #unique_file_idxs = df_cands_filtered['file_index']
-    #for file_index in unique_file_idxs:
-    #    df_file = df_cands_filtered[df_cands_filtered['file_index'] == file_index]
-    #    file_name = os.path.basename(os.path.dirname(df_file['file'].iloc[0]))
-    #    df_file.to_csv(f"{output_folder}{file_name}.csv")
-
 
 if __name__ == "__main__":
     args = parse_arguments()
