@@ -62,7 +62,7 @@ def main(args):
    
     # Remove DM candidates below 2 pc cm^-3 - 0 DM + too low a DM to probably be real
     print("Removing candidates below DM of 2 pc cm^-3") 
-    df_cands_ini = df_cands_ini[df_cands_ini['dm'] < 2.0]
+    df_cands_ini = df_cands_ini[df_cands_ini['dm'] > 2.0]
 
 
     # Get candidate periods and dms
