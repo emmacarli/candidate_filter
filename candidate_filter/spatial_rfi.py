@@ -79,6 +79,7 @@ def label_spatial_rfi(df_cands, config):
         # Fit an exponential decay to the maximum snr in each beam where a candidate is seen
         coords = df_beams[['src_rajd', 'src_dejd']].values
 
+        fit_parameters, fit_errors = [np.nan, np.nan], [np.nan, np.nan] # Initialise to handle 1 candidate in cluster
         if len(df_beams) > 1:
 
             # Currently calculates all distances, not fast, but gives largest value
