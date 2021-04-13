@@ -18,7 +18,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(
         description='Command line arguments for the candidate filtering.')
     parser.add_argument('-i', '--input', type=str, default='', metavar=('input_files'),
-                        help="Path to directory containing the input files.", nargs='+')
+                        help="Path to directory containing the input files.")
     parser.add_argument('-o', '--output', type=str, default='', metavar=('output_path'),
                         help="Base name of the output csv files")
     default_config_path = f"{os.path.dirname(__file__)}/default_config.json"
