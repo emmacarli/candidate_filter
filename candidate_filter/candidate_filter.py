@@ -18,7 +18,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(
         description='Command line arguments for the candidate filtering.')
     parser.add_argument('-i', '--input', type=str, default='', metavar=('input_files'),
-                        help="Path to the input files.", nargs='+')
+                        help="Path to directory containing the input files.", nargs='+')
     parser.add_argument('-o', '--output', type=str, default='', metavar=('output_path'),
                         help="Base name of the output csv files")
     default_config_path = f"{os.path.dirname(__file__)}/default_config.json"
@@ -55,7 +55,7 @@ def main(args):
         config = json.load(json_data_file)
 
     # Read files into a single pandas DataFrame
-    xml_list = ','.join(args.input).split(',')
+    xml_list = sorted(glob.glob("{}/*.xml".format(args.input)))
     df_cands_ini, obs_meta_data = reading_cands.read_candidate_files(xml_list)
 
 
