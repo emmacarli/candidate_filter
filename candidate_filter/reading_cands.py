@@ -71,14 +71,14 @@ def read_csv_candidate_files(files, verbose=True):
     for file in files:
         file = file.replace(',','') 
     
-        candidates = np.genfromtxt(file,dtype='str',skip_header=1,  delimiter=',')
+        candidates = np.genfromtxt(file,dtype='str',skip_header=1,  delimiter=',') #header is column names for candidate info
         
-        for candidate_number, candidate  in reversed(list(enumerate(candidates))): #start with observation metadata first to get the beam coordinates for the candidate
+        for candidate_number, candidate  in reversed(list(enumerate(candidates))): #start with last row of candidate file, which is observation metadata, to get the beam coordinates for all candidates in that file
         
-            if file_index == 0 and candidate_number == np.size(candidates,0) - 1: #last row is observation metadata
+            if candidate_number == np.size(candidates,0) - 1: #read observation metadata from the last row of the candidate file
                 
                 tsamp = float(candidate[3])
-                fft_size = 0.0
+                fft_size = 0.0 #this is handled correctly in candidate filter
                 obs_length = float(candidate[2])
                 nsamples = int(obs_length/tsamp)
                 speed_of_light = 299792458.0
@@ -97,7 +97,7 @@ def read_csv_candidate_files(files, verbose=True):
                 row = []
                 new_dict = {}
                 new_dict['cand_id_in_file'] = candidate_number
-                new_dict['src_raj'] = src_raj
+                new_dict['src_raj'] = src_raj #should be defined from last row of file
                 new_dict['src_rajd'] = src_rajd
                 new_dict['src_dej'] = src_dej
                 new_dict['src_dejd'] = src_dejd
