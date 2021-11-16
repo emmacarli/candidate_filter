@@ -107,7 +107,8 @@ def read_csv_candidate_files(files, verbose=True):
                 new_dict['snr'] = float(candidate[5])
                 new_dict['acc'] = 0.0
                 new_dict['file'] = file
-                new_dict['nassoc'] = 0
+                new_dict['nassoc'] = 3 #set as the default minimum required nassoc to disable low nassoc filtering for FFA outputs
+                #don't have nh, is_adjacent, is_physical, ddm count/snr ratio, byte offset like peasoup
                 row.append(new_dict)
                 all_rows.extend(row)
                 
